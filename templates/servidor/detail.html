@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}{{ objeto.nome }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="bi bi-server"></i> {{ objeto.nome }}</h2>
+        <div class="d-flex gap-2">
+            <a href="{% url 'ind:servidor_update' objeto.pk %}" class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="{% url 'ind:servidor_list' %}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        {# ── Dados do Servidor ── #}
+        <div class="col-12 col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-info-circle"></i> Dados do Servidor</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <tr><th class="text-muted" style="width:40%">OM</th><td>{{ objeto.om }}</td></tr>
+                        <tr><th class="text-muted">Status</th><td><span class="badge bg-secondary">{{ objeto.status }}</span></td></tr>
+                        <tr><th class="text-muted">Tipo de Acesso</th><td>{{ objeto.tipo_acesso }}</td></tr>
+                        <tr><th class="text-muted">Sistema Operacional</th><td>{{ objeto.sistema_operacional }}</td></tr>
+                        <tr><th class="text-muted">Versão SO</th><td>{{ objeto.versao_so }}</td></tr>
+                        <tr><th class="text-muted">Data de Aquisição</th><td>{{ objeto.data_aquisicao|date:"d/m/Y" }}</td></tr>
+                        <tr><th class="text-muted">Idade (anos)</th><td>{{ objeto.idade_anos|floatformat:1 }}</td></tr>
+                        <tr><th class="text-muted">Obs</th><td>{{ objeto.obs|default:"-" }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {# ── Histórico de Compras ── #}
+        <div class="col-12 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="bi bi-cart-check"></i> Compras</h6>
+                    <a href="{% url 'ind:data_compra_create' %}" class="btn btn-sm btn-light py-0 px-2">
+                        <i class="bi bi-plus"></i>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for c in compras %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="small">{{ c.data_compra|date:"d/m/Y" }}</span>
+                            <div>
+                                <a href="{% url 'ind:data_compra_update' c.pk %}" class="btn btn-sm btn-warning py-0 px-1 me-1"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'ind:data_compra_delete' c.pk %}" class="btn btn-sm btn-danger py-0 px-1"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted small text-center py-3">Nenhuma compra registrada.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {# ── Histórico de Visitas ── #}
+        <div class="col-12 col-lg-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="bi bi-calendar-check"></i> Visitas</h6>
+                    <a href="{% url 'ind:data_visita_create' %}" class="btn btn-sm btn-light py-0 px-2">
+                        <i class="bi bi-plus"></i>
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for v in visitas %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="small">{{ v.data_visita|date:"d/m/Y" }}</span>
+                            <div>
+                                <a href="{% url 'ind:data_visita_update' v.pk %}" class="btn btn-sm btn-warning py-0 px-1 me-1"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'ind:data_visita_delete' v.pk %}" class="btn btn-sm btn-danger py-0 px-1"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted small text-center py-3">Nenhuma visita registrada.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

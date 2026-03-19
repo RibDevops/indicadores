@@ -1,85 +1,48 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+{# ── Top bar (mobile) ─────────────────────────────────────────────────────── #}
+<nav class="navbar navbar-dark bg-dark shadow-sm d-lg-none sticky-top" style="z-index:1040;">
     <div class="container-fluid">
-        <!-- Logo/Brand -->
-        <a class="navbar-brand" href="{% url 'cal:home' %}">Home</a>
-
-        <!-- Botão Toggler para Offcanvas -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Offcanvas Menu -->
-        <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title">Menu</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-                <div class="navbar-nav">
-
-                {% if user.is_authenticated %}
-                    
-                    {% if user.is_superuser or user.tipo_usuario == "coordenador" %}
-                        <a class="nav-link" href="{% url 'cal:calendar' %}">Calendário</a>
-                        <a class="nav-link" href="{% url 'cal:semana_alunos' %}">Semana</a>
-                        <a class="nav-link" href="{% url 'cal:dever_create' %}">Novo</a>
-                        <a class="nav-link" href="{% url 'cal:listar_eventos' %}">Lista</a>
-                        <a class="nav-link" href="{% url 'cal:lista_escolas' %}">Escolas</a>
-                        <a class="nav-link" href="{% url 'cal:lista_turma' %}">Turmas</a>
-                        <a class="nav-link" href="{% url 'cal:lista_materia' %}">Matérias</a>
-                        <a class="nav-link" href="{% url 'cal:lista_livro' %}">Livros</a>
-                        <a class="nav-link" href="{% url 'cal:lista_professor' %}">Professores</a>
-                        <a class="nav-link" href="{% url 'cal:lista_alunos' %}">Alunos</a>
-                        <a class="nav-link" href="{% url 'cal:listar_horarios' %}">Horários</a>
-                        <a class="nav-link" href="{% url 'login:lista_usuarios' %}">Usuários</a>
-
-                    {% elif user.tipo_usuario == "professor" %}
-                        <a class="nav-link" href="{% url 'cal:dever_create' %}">Novo</a>
-                        <a class="nav-link" href="{% url 'cal:listar_eventos' %}">Lista</a>
-                        <a class="nav-link" href="{% url 'cal:lista_turma' %}">Turmas</a>
-
-                    {% elif user.tipo_usuario == "pai" %}
-                        <a class="nav-link" href="{% url 'cal:semana_alunos' %}">Semana</a>
-                        <a class="nav-link" href="{% url 'cal:listar_eventos' %}">Lista</a>
-                    {% endif %}
-
-                {% else %}
-                    <a href="{% url 'login:login' %}" class="btn btn-outline-success">Login</a>
-                {% endif %}
-                
-                </div>
-
-                {% if user.is_authenticated %}
-                <!-- Usuário logado: dropdown -->
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user me-1"></i>{{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{% url 'login:perfil' %}">
-                                <i class="fas fa-user me-2"></i>Meu Perfil
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'login:editar_perfil' %}">
-                                <i class="fas fa-edit me-2"></i>Editar Perfil
-                            </a></li>
-                            <li><a class="dropdown-item" href="{% url 'login:alterar_senha' %}">
-                                <i class="fas fa-key me-2"></i>Alterar Senha
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{% url 'login:logout' %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Sair
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                {% endif %}
-            </div>
-        </div>
+        <span class="navbar-brand fw-semibold">
+            <i class="bi bi-server me-2"></i>Indicadores
+        </span>
     </div>
 </nav>
+
+{# ── Mobile: Offcanvas da direita ─────────────────────────────────────────── #}
+<div class="offcanvas offcanvas-end bg-dark text-white border-0"
+     tabindex="-1" id="sidebarMobile" style="width:260px;">
+    <div class="offcanvas-header border-bottom border-secondary">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-server fs-4 me-2"></i>
+            <span class="fw-bold">Indicadores</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        {% include 'sidebar_menu.html' %}
+    </div>
+</div>
+
+{# ── Mobile: Botão hambúrguer fixo ────────────────────────────────────────── #}
+<button class="d-lg-none hamburger-fab"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#sidebarMobile"
+        aria-controls="sidebarMobile"
+        aria-label="Abrir menu">
+    <span class="hamburger-icon">
+        <span></span><span></span><span></span>
+    </span>
+</button>
+
+{# ── Desktop: Sidebar fixa à direita ──────────────────────────────────────── #}
+<div id="sidebar-desktop"
+     class="d-none d-lg-flex flex-column bg-dark text-white shadow-lg"
+     style="position:fixed;top:0;right:0;width:230px;height:100vh;z-index:1030;overflow-y:auto;">
+    <div class="p-3 border-bottom border-secondary">
+        <a href="{% url 'ind:home' %}" class="text-decoration-none text-white d-flex align-items-center">
+            <i class="bi bi-server fs-4 me-2"></i>
+            <span class="fw-bold">Indicadores</span>
+        </a>
+    </div>
+    {% include 'sidebar_menu.html' %}
+</div>

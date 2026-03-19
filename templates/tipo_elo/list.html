@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Tipos de Elo{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="bi bi-link-45deg"></i> Tipos de Elo</h2>
+        <a href="{% url 'ind:tipo_elo_create' %}" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-circle"></i> Novo
+        </a>
+    </div>
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr><th>#</th><th>Tipo</th><th>Descrição</th><th class="text-center">Ações</th></tr>
+                </thead>
+                <tbody>
+                    {% for obj in objetos %}
+                    <tr>
+                        <td class="text-muted small">{{ obj.pk }}</td>
+                        <td><strong>{{ obj.tipo }}</strong></td>
+                        <td class="text-muted small">{{ obj.descricao|default:"-" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'ind:tipo_elo_update' obj.pk %}" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i> Editar</a>
+                            <a href="{% url 'ind:tipo_elo_delete' obj.pk %}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Excluir</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Nenhum registro.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

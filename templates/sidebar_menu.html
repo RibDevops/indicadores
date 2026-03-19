@@ -1,0 +1,102 @@
+<nav class="py-2">
+
+    {# ── Principal ── #}
+    <div class="px-3 pt-2 pb-1">
+        <span class="text-uppercase text-secondary" style="font-size:.7rem;letter-spacing:.08em;">Principal</span>
+    </div>
+
+    <a href="{% url 'ind:home' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+        <i class="bi bi-house-fill fs-5"></i>
+        <span>Início</span>
+    </a>
+
+    <a href="{% url 'ind:servidor_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'servidor' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-server fs-5"></i>
+        <span>Servidores</span>
+    </a>
+
+    <a href="{% url 'ind:om_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'om' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-building fs-5"></i>
+        <span>OMs</span>
+    </a>
+
+    <a href="{% url 'ind:comar_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'comar' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-diagram-3 fs-5"></i>
+        <span>COMARs</span>
+    </a>
+
+    {# ── Cadastros ── #}
+    <div class="px-3 pt-3 pb-1">
+        <span class="text-uppercase text-secondary" style="font-size:.7rem;letter-spacing:.08em;">Cadastros</span>
+    </div>
+
+    <a href="{% url 'ind:regiao_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'regiao' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-geo-alt fs-5"></i>
+        <span>Regiões</span>
+    </a>
+
+    <a href="{% url 'ind:estado_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'estado' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-map fs-5"></i>
+        <span>Estados</span>
+    </a>
+
+    <a href="{% url 'ind:pais_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'pais' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-globe2 fs-5"></i>
+        <span>Países</span>
+    </a>
+
+    <a href="{% url 'ind:tipo_elo_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'tipo_elo' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-link-45deg fs-5"></i>
+        <span>Tipos de Elo</span>
+    </a>
+
+    <a href="{% url 'ind:tipo_acesso_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'tipo_acesso' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-shield-lock fs-5"></i>
+        <span>Tipos de Acesso</span>
+    </a>
+
+    <a href="{% url 'ind:status_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'status' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-toggle-on fs-5"></i>
+        <span>Status</span>
+    </a>
+
+    {# ── Histórico ── #}
+    <div class="px-3 pt-3 pb-1">
+        <span class="text-uppercase text-secondary" style="font-size:.7rem;letter-spacing:.08em;">Histórico</span>
+    </div>
+
+    <a href="{% url 'ind:data_compra_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'data_compra' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-cart-check fs-5"></i>
+        <span>Datas de Compra</span>
+    </a>
+
+    <a href="{% url 'ind:data_visita_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'data_visita' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-calendar-check fs-5"></i>
+        <span>Datas de Visita</span>
+    </a>
+
+</nav>
