@@ -7,6 +7,9 @@ urlpatterns = [
     # Home
     path('', views.home, name='home'),
 
+    # Indicadores
+    path('indicadores/', views.indicadores, name='indicadores'),
+
     # Status
     path('status/', views.status_list, name='status_list'),
     path('status/novo/', views.status_create, name='status_create'),

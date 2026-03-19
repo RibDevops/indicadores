@@ -1,4 +1,6 @@
 from django import forms
+from django.utils import timezone
+
 from .models import (
     Status, TipoAcesso, TipoElo, Pais, Estado, RegiaoCidade,
     Comar, OM, Servidor, DataCompra, DataVisita,
@@ -6,6 +8,15 @@ from .models import (
 
 _WIDGET_ATTRS = {'class': 'form-control'}
 _SELECT_ATTRS = {'class': 'form-select'}
+
+
+def _reject_future_date(value, field_label='Data'):
+    """Raise ValidationError if *value* is in the future."""
+    if value and value > timezone.now().date():
+        raise forms.ValidationError(
+            f'{field_label} não pode ser uma data futura.'
+        )
+    return value
 
 
 class StatusForm(forms.ModelForm):
@@ -41,6 +52,9 @@ class PaisForm(forms.ModelForm):
             'nome': forms.TextInput(attrs=_WIDGET_ATTRS),
         }
 
+    def clean_sigla(self):
+        return self.cleaned_data['sigla'].upper()
+
 
 class EstadoForm(forms.ModelForm):
     class Meta:
@@ -51,6 +65,9 @@ class EstadoForm(forms.ModelForm):
             'nome': forms.TextInput(attrs=_WIDGET_ATTRS),
             'pais': forms.Select(attrs=_SELECT_ATTRS),
         }
+
+    def clean_sigla(self):
+        return self.cleaned_data['sigla'].upper()
 
 
 class RegiaoCidadeForm(forms.ModelForm):
@@ -63,6 +80,9 @@ class RegiaoCidadeForm(forms.ModelForm):
             'estado': forms.Select(attrs=_SELECT_ATTRS),
         }
 
+    def clean_sigla(self):
+        return self.cleaned_data['sigla'].upper()
+
 
 class ComarForm(forms.ModelForm):
     class Meta:
@@ -74,6 +94,9 @@ class ComarForm(forms.ModelForm):
             'regiao_cidade': forms.Select(attrs=_SELECT_ATTRS),
             'obs': forms.Textarea(attrs={**_WIDGET_ATTRS, 'rows': 3}),
         }
+
+    def clean_sigla(self):
+        return self.cleaned_data['sigla'].upper()
 
 
 class OMForm(forms.ModelForm):
@@ -89,13 +112,16 @@ class OMForm(forms.ModelForm):
             'obs': forms.Textarea(attrs={**_WIDGET_ATTRS, 'rows': 3}),
         }
 
+    def clean_sigla(self):
+        return self.cleaned_data['sigla'].upper()
+
 
 class ServidorForm(forms.ModelForm):
     class Meta:
         model = Servidor
         fields = [
             'om', 'status', 'tipo_acesso', 'nome',
-            'data_aquisicao', 'sistema_operacional', 'versao_so', 'obs',
+            'data_aquisicao', 'sistema_operacional', 'versao_so', 'suporte_so', 'obs',
         ]
         widgets = {
             'om': forms.Select(attrs=_SELECT_ATTRS),
@@ -105,8 +131,14 @@ class ServidorForm(forms.ModelForm):
             'data_aquisicao': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}),
             'sistema_operacional': forms.TextInput(attrs=_WIDGET_ATTRS),
             'versao_so': forms.TextInput(attrs=_WIDGET_ATTRS),
+            'suporte_so': forms.Select(attrs=_SELECT_ATTRS),
             'obs': forms.Textarea(attrs={**_WIDGET_ATTRS, 'rows': 3}),
         }
+
+    def clean_data_aquisicao(self):
+        return _reject_future_date(
+            self.cleaned_data.get('data_aquisicao'), 'Data de aquisição'
+        )
 
 
 class DataCompraForm(forms.ModelForm):
@@ -118,6 +150,11 @@ class DataCompraForm(forms.ModelForm):
             'data_compra': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}),
         }
 
+    def clean_data_compra(self):
+        return _reject_future_date(
+            self.cleaned_data.get('data_compra'), 'Data de compra'
+        )
+
 
 class DataVisitaForm(forms.ModelForm):
     class Meta:
@@ -127,3 +164,8 @@ class DataVisitaForm(forms.ModelForm):
             'servidor': forms.Select(attrs=_SELECT_ATTRS),
             'data_visita': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}),
         }
+
+    def clean_data_visita(self):
+        return _reject_future_date(
+            self.cleaned_data.get('data_visita'), 'Data de visita'
+        )

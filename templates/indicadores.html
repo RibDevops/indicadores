@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block title %}Indicadores{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    {# ── Cabeçalho ── #}
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="alert alert-primary d-flex align-items-center gap-2 shadow-sm mb-0" role="alert">
+                <i class="bi bi-bar-chart-line-fill fs-4"></i>
+                <span>Painel de <strong>Indicadores</strong> — REDE_M · I_BR · I_EXT</span>
+            </div>
+        </div>
+    </div>
+
+    {# ══════════════════════════════════════════════════════════════════════════
+       REDE_M
+    ══════════════════════════════════════════════════════════════════════════ #}
+    <h5 class="text-uppercase fw-bold mb-3" style="letter-spacing:.06em;">
+        <i class="bi bi-diagram-3 me-2 text-primary"></i>REDE_M
+    </h5>
+
+    <div class="row g-3 mb-4">
+
+        {# QntUnidTotal #}
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3 py-3">
+                    <div class="rounded-3 bg-primary bg-opacity-10 p-3 flex-shrink-0">
+                        <i class="bi bi-building fs-3 text-primary"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold lh-1">{{ rede_qnt_unid_total }}</div>
+                        <div class="text-muted small mt-1">QntUnidTotal<br>
+                            <span class="text-secondary" style="font-size:.75rem;">OMs com Rede cadastrada</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# QntUnid-INOperantes #}
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body d-flex align-items-center gap-3 py-3">
+                    <div class="rounded-3 bg-danger bg-opacity-10 p-3 flex-shrink-0">
+                        <i class="bi bi-exclamation-triangle fs-3 text-danger"></i>
+                    </div>
+                    <div>
+                        <div class="fs-2 fw-bold lh-1 text-danger">{{ rede_om_inoperantes }}</div>
+                        <div class="text-muted small mt-1">QntUnid-INOperantes<br>
+                            <span class="text-secondary" style="font-size:.75rem;">OMs com todos os servidores inoperantes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# QntUnidTotalTiposdeAcesso #}
+        <div class="col-12 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pb-0 pt-3 px-3">
+                    <span class="fw-semibold small text-muted text-uppercase" style="letter-spacing:.05em;">
+                        QntUnidTotalTiposdeAcesso
+                    </span>
+                </div>
+                <div class="card-body pt-2">
+                    {% if rede_tipos_acesso %}
+                        <ul class="list-unstyled mb-0">
+                            {% for ta in rede_tipos_acesso %}
+                            <li class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                                <span class="small">{{ ta.tipo }}</span>
+                                <span class="badge bg-primary rounded-pill">{{ ta.total }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted small mb-0">Nenhum servidor cadastrado.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {# ══════════════════════════════════════════════════════════════════════════
+       I_BR  e  I_EXT  — lado a lado
+    ══════════════════════════════════════════════════════════════════════════ #}
+    <div class="row g-4">
+
+        {# ── I_BR ── #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-success text-white py-3">
+                    <h6 class="mb-0 fw-bold text-uppercase" style="letter-spacing:.06em;">
+                        <i class="bi bi-flag-fill me-2"></i>I_BR — Índice de Confiabilidade (Brasil)
+                    </h6>
+                </div>
+                <div class="card-body">
+
+                    {# QntUnidTotalBR #}
+                    <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+                        <div class="rounded-3 bg-success bg-opacity-10 p-3 flex-shrink-0">
+                            <i class="bi bi-server fs-3 text-success"></i>
+                        </div>
+                        <div>
+                            <div class="fs-2 fw-bold lh-1">{{ ibr_qnt_total }}</div>
+                            <div class="text-muted small mt-1">QntUnidTotalBR
+                                <span class="d-block text-secondary" style="font-size:.75rem;">Servidores no Brasil</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Scores #}
+                    <div class="row g-3">
+
+                        <div class="col-12 col-sm-4">
+                            <div class="text-center p-3 rounded-3 bg-light">
+                                <div class="fs-3 fw-bold text-success">{{ ibr_ciclo_vida }}</div>
+                                <div class="small text-muted mt-1">CicloVidaBR</div>
+                                <div class="text-secondary" style="font-size:.7rem;">Σ pontos ciclo de vida</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <div class="text-center p-3 rounded-3 bg-light">
+                                <div class="fs-3 fw-bold text-success">{{ ibr_sup_so }}</div>
+                                <div class="small text-muted mt-1">SupSOBR</div>
+                                <div class="text-secondary" style="font-size:.7rem;">Σ pontos suporte SO</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <div class="text-center p-3 rounded-3 bg-light">
+                                <div class="fs-3 fw-bold text-success">{{ ibr_vis_tec }}</div>
+                                <div class="small text-muted mt-1">VisTecBR</div>
+                                <div class="text-secondary" style="font-size:.7rem;">Σ pontos visita técnica</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {# Legenda das escalas #}
+                    <div class="mt-3 pt-3 border-top">
+                        <p class="text-muted mb-1" style="font-size:.75rem;"><strong>Ciclo de vida:</strong> ≤2 anos=1 · 2-4=0,5 · 4-6=0,26 · >6=0</p>
+                        <p class="text-muted mb-1" style="font-size:.75rem;"><strong>Suporte SO:</strong> Atual=1 · Suportado=0,5 · Descontinuado=0</p>
+                        <p class="text-muted mb-0" style="font-size:.75rem;"><strong>Visita técnica:</strong> ≤48 meses=1 · 49-72=0,5 · 73-96=0,25 · >96=0</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {# ── I_EXT ── #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-info text-white py-3">
+                    <h6 class="mb-0 fw-bold text-uppercase" style="letter-spacing:.06em;">
+                        <i class="bi bi-globe2 me-2"></i>I_EXT — Índice de Confiabilidade (Exterior)
+                    </h6>
+                </div>
+                <div class="card-body">
+
+                    {# QntUnidTotalExt #}
+                    <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
+                        <div class="rounded-3 bg-info bg-opacity-10 p-3 flex-shrink-0">
+                            <i class="bi bi-server fs-3 text-info"></i>
+                        </div>
+                        <div>
+                            <div class="fs-2 fw-bold lh-1">{{ iext_qnt_total }}</div>
+                            <div class="text-muted small mt-1">QntUnidTotalExt
+                                <span class="d-block text-secondary" style="font-size:.75rem;">Servidores no Exterior</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Scores #}
+                    <div class="row g-3">
+
+                        <div class="col-12 col-sm-4">
+                            <div class="text-center p-3 rounded-3 bg-light">
+                                <div class="fs-3 fw-bold text-info">{{ iext_ciclo_vida }}</div>
+                                <div class="small text-muted mt-1">CicloVidaExt</div>
+                                <div class="text-secondary" style="font-size:.7rem;">Σ pontos ciclo de vida</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <div class="text-center p-3 rounded-3 bg-light">
+                                <div class="fs-3 fw-bold text-info">{{ iext_sup_so }}</div>
+                                <div class="small text-muted mt-1">SupSOExt</div>
+                                <div class="text-secondary" style="font-size:.7rem;">Σ pontos suporte SO</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4">
+                            <div class="text-center p-3 rounded-3 bg-light">
+                                <div class="fs-3 fw-bold text-info">{{ iext_vis_tec }}</div>
+                                <div class="small text-muted mt-1">VisTecExt</div>
+                                <div class="text-secondary" style="font-size:.7rem;">Σ pontos visita técnica</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {# Legenda das escalas #}
+                    <div class="mt-3 pt-3 border-top">
+                        <p class="text-muted mb-1" style="font-size:.75rem;"><strong>Ciclo de vida:</strong> ≤2 anos=1 · 2-4=0,5 · 4-6=0,26 · >6=0</p>
+                        <p class="text-muted mb-1" style="font-size:.75rem;"><strong>Suporte SO:</strong> Atual=1 · Suportado=0,5 · Descontinuado=0</p>
+                        <p class="text-muted mb-0" style="font-size:.75rem;"><strong>Visita técnica:</strong> ≤48 meses=1 · 49-72=0,5 · 73-96=0,25 · >96=0</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>{# /row I_BR + I_EXT #}
+
+</div>
+{% endblock %}

@@ -44,6 +44,93 @@
         </div>
     </div>
 
+    {# ── Indicadores resumo ── #}
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="text-uppercase text-muted fw-semibold mb-0" style="letter-spacing:.08em;">
+            <i class="bi bi-bar-chart-line me-1"></i>Indicadores
+        </h6>
+        <a href="{% url 'ind:indicadores' %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-arrow-right-circle me-1"></i>Ver painel completo
+        </a>
+    </div>
+
+    <div class="row g-3 mb-4">
+
+        {# REDE_M #}
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary text-white py-2 px-3">
+                    <span class="fw-semibold small">REDE_M</span>
+                </div>
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">OMs com Rede</span>
+                        <span class="fw-bold fs-5">{{ rede_qnt_unid_total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">OMs Inoperantes</span>
+                        <span class="fw-bold fs-5 text-danger">{{ rede_om_inoperantes }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# I_BR #}
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-success text-white py-2 px-3">
+                    <span class="fw-semibold small">I_BR — Brasil</span>
+                </div>
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">Servidores</span>
+                        <span class="fw-bold fs-5">{{ ibr_qnt_total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted">CicloVida</span>
+                        <span class="fw-semibold text-success">{{ ibr_ciclo_vida }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted">SupSO</span>
+                        <span class="fw-semibold text-success">{{ ibr_sup_so }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">VisTec</span>
+                        <span class="fw-semibold text-success">{{ ibr_vis_tec }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# I_EXT #}
+        <div class="col-12 col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-info text-white py-2 px-3">
+                    <span class="fw-semibold small">I_EXT — Exterior</span>
+                </div>
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted">Servidores</span>
+                        <span class="fw-bold fs-5">{{ iext_qnt_total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted">CicloVida</span>
+                        <span class="fw-semibold text-info">{{ iext_ciclo_vida }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted">SupSO</span>
+                        <span class="fw-semibold text-info">{{ iext_sup_so }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">VisTec</span>
+                        <span class="fw-semibold text-info">{{ iext_vis_tec }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     {# ── Acesso rápido ── #}
     <h6 class="text-uppercase text-muted fw-semibold mb-3" style="letter-spacing:.08em;">Acesso Rápido</h6>
     <div class="row g-4">

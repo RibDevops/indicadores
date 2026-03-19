@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Count, Max
+from django.utils import timezone
+
 from .models import (
     Status, TipoAcesso, TipoElo, Pais, Estado, RegiaoCidade,
     Comar, OM, Servidor, DataCompra, DataVisita,
@@ -10,6 +13,118 @@ from .forms import (
     DataCompraForm, DataVisitaForm,
 )
 
+# ---------------------------------------------------------------------------
+# Indicator helpers
+# ---------------------------------------------------------------------------
+
+# Status descriptions that mean "inoperante" (case-insensitive match)
+_STATUS_INOPERANTE = ('inoperante', 'inativo', 'desativado', 'offline')
+
+# Sigla do Brasil no cadastro de países
+_SIGLA_BRASIL = 'BR'
+
+
+def _score_vis_tec(ultima_visita):
+    """
+    Score for time since last technical visit (in months).
+    ≤48 → 1.0 | 49-72 → 0.5 | 73-96 → 0.25 | >96 → 0.0 | never → 0.0
+    """
+    if ultima_visita is None:
+        return 0.0
+    meses = (timezone.now().date() - ultima_visita).days / 30.44
+    if meses <= 48:
+        return 1.0
+    elif meses <= 72:
+        return 0.5
+    elif meses <= 96:
+        return 0.25
+    return 0.0
+
+
+def _compute_indicadores():
+    """
+    Compute all three indicator groups (REDE_M, I_BR, I_EXT) and return
+    a dict ready to be passed as template context.
+    """
+    today = timezone.now().date()
+
+    # ── REDE_M ────────────────────────────────────────────────────────────────
+    # OMs that have at least one server
+    om_com_rede = OM.objects.filter(servidores__isnull=False).distinct()
+    qnt_unid_total = om_com_rede.count()
+
+    # Count per TipoAcesso (only OMs that have servers)
+    tipos_acesso = (
+        TipoAcesso.objects
+        .filter(servidor__isnull=False)
+        .annotate(total=Count('servidor', distinct=True))
+        .values('tipo', 'total')
+        .order_by('-total')
+    )
+
+    # OMs inoperantes: all servers of that OM have an "inoperante" status
+    om_inoperantes = 0
+    for om in om_com_rede:
+        todos_inop = all(
+            any(kw in s.status.descricao.lower() for kw in _STATUS_INOPERANTE)
+            for s in om.servidores.select_related('status').all()
+        )
+        if todos_inop:
+            om_inoperantes += 1
+
+    # ── I_BR ──────────────────────────────────────────────────────────────────
+    servidores_br = (
+        Servidor.objects
+        .filter(om__pais__sigla=_SIGLA_BRASIL)
+        .select_related('om__pais', 'status', 'tipo_acesso')
+        .prefetch_related('datavisita_set')
+    )
+    qnt_br = servidores_br.count()
+
+    ciclo_br = sum(s.score_ciclo_vida() for s in servidores_br)
+    sup_so_br = sum(s.score_suporte_so() for s in servidores_br)
+    vis_tec_br = sum(
+        _score_vis_tec(
+            s.datavisita_set.aggregate(m=Max('data_visita'))['m']
+        )
+        for s in servidores_br
+    )
+
+    # ── I_EXT ─────────────────────────────────────────────────────────────────
+    servidores_ext = (
+        Servidor.objects
+        .exclude(om__pais__sigla=_SIGLA_BRASIL)
+        .select_related('om__pais', 'status', 'tipo_acesso')
+        .prefetch_related('datavisita_set')
+    )
+    qnt_ext = servidores_ext.count()
+
+    ciclo_ext = sum(s.score_ciclo_vida() for s in servidores_ext)
+    sup_so_ext = sum(s.score_suporte_so() for s in servidores_ext)
+    vis_tec_ext = sum(
+        _score_vis_tec(
+            s.datavisita_set.aggregate(m=Max('data_visita'))['m']
+        )
+        for s in servidores_ext
+    )
+
+    return {
+        # REDE_M
+        'rede_qnt_unid_total': qnt_unid_total,
+        'rede_tipos_acesso': list(tipos_acesso),
+        'rede_om_inoperantes': om_inoperantes,
+        # I_BR
+        'ibr_qnt_total': qnt_br,
+        'ibr_ciclo_vida': round(ciclo_br, 2),
+        'ibr_sup_so': round(sup_so_br, 2),
+        'ibr_vis_tec': round(vis_tec_br, 2),
+        # I_EXT
+        'iext_qnt_total': qnt_ext,
+        'iext_ciclo_vida': round(ciclo_ext, 2),
+        'iext_sup_so': round(sup_so_ext, 2),
+        'iext_vis_tec': round(vis_tec_ext, 2),
+    }
+
 
 # ── Home ──────────────────────────────────────────────────────────────────────
 
@@ -18,8 +133,16 @@ def home(request):
         'total_servidores': Servidor.objects.count(),
         'total_om': OM.objects.count(),
         'total_comar': Comar.objects.count(),
+        **_compute_indicadores(),
     }
     return render(request, 'home.html', context)
+
+
+# ── Indicadores ───────────────────────────────────────────────────────────────
+
+def indicadores(request):
+    context = _compute_indicadores()
+    return render(request, 'indicadores.html', context)
 
 
 # ── Status ────────────────────────────────────────────────────────────────────
