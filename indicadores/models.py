@@ -136,7 +136,7 @@ class Servidor(models.Model):
 
 class DataStatus(models.Model):
     servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
-    data_visita = models.DateField()
+    data_status = models.DateField()
 
     def __str__(self):
         return f"{self.servidor} - {self.data_visita}"
