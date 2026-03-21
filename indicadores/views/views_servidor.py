@@ -6,7 +6,14 @@ from ..forms import ServidorForm
 
 
 def servidor_list(request):
-    servidores = Servidor.objects.select_related('om', 'status', 'tipo_acesso').all()
+    # om foi removido de Servidor — a relação agora é inversa (OM.servidor FK)
+    # prefetch_related('oms') carrega as OMs vinculadas sem N+1 queries
+    servidores = (
+        Servidor.objects
+        .select_related('status', 'tipo_acesso')
+        .prefetch_related('oms')
+        .all()
+    )
     return render(request, 'servidor/list.html', {'objetos': servidores})
 
 
