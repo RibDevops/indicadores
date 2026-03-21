@@ -64,16 +64,7 @@ class Comar(models.Model):
 
 
 
-class OM(models.Model):
-    sigla = models.CharField(max_length=20)
-    nome = models.CharField(max_length=100)
-    comar = models.ForeignKey(Comar, on_delete=models.CASCADE)
-    pais = models.ForeignKey(Pais, on_delete=models.CASCADE)
-    tipo_elo = models.ForeignKey(TipoElo, on_delete=models.CASCADE)
-    obs = models.TextField(blank=True, null=True)
 
-    def __str__(self):
-        return self.nome
 
 
 class Servidor(models.Model):
@@ -87,11 +78,11 @@ class Servidor(models.Model):
         (SUPORTE_DESCONTINUADO, 'Descontinuado'),
     ]
 
-    om = models.ForeignKey(
-        OM,
-        on_delete=models.CASCADE,
-        related_name='servidores',
-    )
+    # om = models.ForeignKey(
+    #     OM,
+    #     on_delete=models.CASCADE,
+    #     related_name='servidores',
+    # )
 
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     tipo_acesso = models.ForeignKey(TipoAcesso, on_delete=models.CASCADE)
@@ -168,7 +159,19 @@ class Servidor(models.Model):
     def __str__(self):
         return self.nome
 
+class OM(models.Model):
+    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    sigla = models.CharField(max_length=20)
+    nome = models.CharField(max_length=100)
+    comar = models.ForeignKey(Comar, on_delete=models.CASCADE)
+    pais = models.ForeignKey(Pais, on_delete=models.CASCADE)
+    tipo_elo = models.ForeignKey(TipoElo, on_delete=models.CASCADE)
+    obs = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return self.nome
+    
+    
 # =========================
 # HISTÓRICO DE STATUS
 # =========================
