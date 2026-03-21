@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <title>Bem-vindo | Indicadores</title>
+    <style>
+        body { background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 100%); min-height: 100vh; }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center min-vh-100">
+
+    <div class="container" style="max-width:860px;">
+
+        {# ── Cabeçalho ── #}
+        <div class="text-center text-white mb-5">
+            <i class="bi bi-server" style="font-size:4rem; color:#4da6ff;"></i>
+            <h1 class="fw-bold mt-3">Sistema de Indicadores de Servidores</h1>
+            <p class="lead text-white-50">
+                Monitoramento e gestão da infraestrutura de servidores das Organizações Militares
+            </p>
+        </div>
+
+        {# ── Cards explicativos ── #}
+        <div class="row g-4 mb-5">
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card border-0 h-100 text-center p-3" style="background:rgba(255,255,255,.08);">
+                    <i class="bi bi-server text-primary fs-1 mb-3"></i>
+                    <h6 class="text-white fw-semibold">Servidores</h6>
+                    <p class="text-white-50 small mb-0">
+                        Cadastro completo de servidores com sistema operacional,
+                        tipo de acesso, data de aquisição e status operacional.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card border-0 h-100 text-center p-3" style="background:rgba(255,255,255,.08);">
+                    <i class="bi bi-clock-history text-warning fs-1 mb-3"></i>
+                    <h6 class="text-white fw-semibold">Histórico de Status</h6>
+                    <p class="text-white-50 small mb-0">
+                        Registro automático de cada mudança de status — ativo, pane,
+                        manutenção ou depósito — com cálculo de dias em cada estado.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card border-0 h-100 text-center p-3" style="background:rgba(255,255,255,.08);">
+                    <i class="bi bi-building text-success fs-1 mb-3"></i>
+                    <h6 class="text-white fw-semibold">OMs vinculadas</h6>
+                    <p class="text-white-50 small mb-0">
+                        Um servidor pode atender várias Organizações Militares.
+                        Gerencie os vínculos e visualize a cobertura por COMAR e país.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card border-0 h-100 text-center p-3" style="background:rgba(255,255,255,.08);">
+                    <i class="bi bi-bar-chart-line text-info fs-1 mb-3"></i>
+                    <h6 class="text-white fw-semibold">Indicadores</h6>
+                    <p class="text-white-50 small mb-0">
+                        Painel com índices de confiabilidade (I_BR e I_EXT) baseados
+                        em ciclo de vida, suporte do SO e visitas técnicas.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        {# ── Botão de acesso ── #}
+        <div class="text-center">
+            <a href="{% url 'ind:login' %}" class="btn btn-primary btn-lg px-5 shadow">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Acessar o Sistema
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

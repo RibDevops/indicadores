@@ -1,3 +1,4 @@
+from .views_auth import *
 from .views_home import *
 from .views_indicadores import *
 from .views_status import *

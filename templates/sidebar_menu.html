@@ -112,4 +112,22 @@
         <span>Usuários</span>
     </a>
 
+    {# ── Sessão ── #}
+    <div class="px-3 pt-3 pb-1">
+        <span class="text-uppercase text-secondary" style="font-size:.7rem;letter-spacing:.08em;">Sessão</span>
+    </div>
+
+    {# Exibe o usuário logado e botão de logout #}
+    {% if user.is_authenticated %}
+    <div class="px-3 py-2 d-flex align-items-center gap-2 text-white-50 small">
+        <i class="bi bi-person-circle fs-5 text-white"></i>
+        <span class="text-white">{{ user.username }}</span>
+    </div>
+    <a href="{% url 'ind:logout' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-danger text-decoration-none">
+        <i class="bi bi-box-arrow-right fs-5"></i>
+        <span>Sair</span>
+    </a>
+    {% endif %}
+
 </nav>
