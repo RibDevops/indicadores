@@ -106,8 +106,7 @@ class Servidor(models.Model):
         choices=SUPORTE_SO_CHOICES,
         default=SUPORTE_ATUAL,
     )
-    data_compra = models.DateField()
-    data_visita = models.DateField()
+        
     obs = models.TextField(blank=True, null=True)
 
     def idade_anos(self):
@@ -135,18 +134,16 @@ class Servidor(models.Model):
     def __str__(self):
         return self.nome
 
+class DataStatus(models.Model):
+    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    data_visita = models.DateField()
 
-# class DataCompra(models.Model):
-#     servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
-#     data_compra = models.DateField()
+    def __str__(self):
+        return f"{self.servidor} - {self.data_visita}"
 
-#     def __str__(self):
-#         return f"{self.servidor} - {self.data_compra}"
+class DataVisita(models.Model):
+    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    data_visita = models.DateField()
 
-
-# class DataVisita(models.Model):
-#     servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
-#     data_visita = models.DateField()
-
-#     def __str__(self):
-#         return f"{self.servidor} - {self.data_visita}"
+    def __str__(self):
+        return f"{self.servidor} - {self.data_visita}"
