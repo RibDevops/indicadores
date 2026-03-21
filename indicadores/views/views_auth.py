@@ -18,12 +18,13 @@ from django.shortcuts import render, redirect
 
 def boas_vindas(request):
     """
-    Tela pública de apresentação do sistema.
+    Tela pública de apresentação do sistema — acessível em /.
     Usuários já autenticados são redirecionados direto para o home.
     """
     if request.user.is_authenticated:
         return redirect('ind:home')
     return render(request, 'boas_vindas.html')
+
 
 
 def login(request):
@@ -51,7 +52,7 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 # Redireciona para a URL solicitada originalmente (se houver) ou para home
-                next_url = request.GET.get('next') or 'ind:home'
+                next_url = request.GET.get('next') or '/home/'
                 return redirect(next_url)
             else:
                 # Pode ser: usuário não cadastrado localmente OU senha LDAP incorreta

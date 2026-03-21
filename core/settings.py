@@ -126,6 +126,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # LOGIN_URL: para onde o login_required redireciona usuários não autenticados
 LOGIN_URL = '/login/'
 # LOGIN_REDIRECT_URL: destino após login bem-sucedido (usado como fallback)
-LOGIN_REDIRECT_URL = '/'
-# LOGOUT_REDIRECT_URL: destino após logout
-LOGOUT_REDIRECT_URL = '/boas-vindas/'
+LOGIN_REDIRECT_URL = '/home/'
+# LOGOUT_REDIRECT_URL: destino após logout — volta para a tela de boas-vindas em /
+LOGOUT_REDIRECT_URL = '/'

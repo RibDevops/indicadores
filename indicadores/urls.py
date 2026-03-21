@@ -10,12 +10,14 @@ lr = login_required
 
 urlpatterns = [
     # ── Públicas (sem autenticação) ──────────────────────────────────────────
-    path('boas-vindas/', views.boas_vindas, name='boas_vindas'),
-    path('login/',       views.login,       name='login'),
-    path('logout/',      views.logout,      name='logout'),
+    # / é a tela de boas-vindas para usuários não autenticados
+    # e redireciona para o home para usuários autenticados
+    path('',       views.boas_vindas, name='boas_vindas'),
+    path('login/', views.login,       name='login'),
+    path('logout/',views.logout,      name='logout'),
 
-    # ── Home ─────────────────────────────────────────────────────────────────
-    path('', lr(views.home), name='home'),
+    # ── Home (protegido) ─────────────────────────────────────────────────────
+    path('home/', lr(views.home), name='home'),
 
     # ── Indicadores ──────────────────────────────────────────────────────────
     path('indicadores/', lr(views.indicadores), name='indicadores'),
