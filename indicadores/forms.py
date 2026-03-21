@@ -131,7 +131,9 @@ class ServidorForm(forms.ModelForm):
             'status': forms.Select(attrs=_SELECT_ATTRS),
             'tipo_acesso': forms.Select(attrs=_SELECT_ATTRS),
             'nome': forms.TextInput(attrs=_WIDGET_ATTRS),
-            'data_aquisicao': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}),
+            # format='%Y-%m-%d' garante que o valor seja pré-preenchido corretamente
+            # no input type="date" ao editar (o HTML espera o formato YYYY-MM-DD)
+            'data_aquisicao': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}, format='%Y-%m-%d'),
             'sistema_operacional': forms.TextInput(attrs=_WIDGET_ATTRS),
             'versao_so': forms.TextInput(attrs=_WIDGET_ATTRS),
             'suporte_so': forms.Select(attrs=_SELECT_ATTRS),
@@ -150,7 +152,9 @@ class DataVisitaForm(forms.ModelForm):
         fields = ['servidor', 'data_visita']
         widgets = {
             'servidor': forms.Select(attrs=_SELECT_ATTRS),
-            'data_visita': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}),
+            # format='%Y-%m-%d' garante que o valor seja pré-preenchido corretamente
+            # no input type="date" ao editar (o HTML espera o formato YYYY-MM-DD)
+            'data_visita': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}, format='%Y-%m-%d'),
         }
 
     def clean_data_visita(self):
