@@ -6,7 +6,9 @@ from ..forms import OMForm
 
 
 def om_list(request):
-    return render(request, 'om/list.html', {'objetos': OM.objects.select_related('comar', 'pais', 'tipo_elo').all()})
+    # Carrega servidor junto para exibir na listagem sem queries extras
+    objetos = OM.objects.select_related('comar', 'pais', 'tipo_elo', 'servidor').all()
+    return render(request, 'om/list.html', {'objetos': objetos})
 
 
 def om_create(request):

@@ -78,11 +78,9 @@ class Servidor(models.Model):
         (SUPORTE_DESCONTINUADO, 'Descontinuado'),
     ]
 
-    # om = models.ForeignKey(
-    #     OM,
-    #     on_delete=models.CASCADE,
-    #     related_name='servidores',
-    # )
+    # A relação com OM é inversa: OM tem FK para Servidor.
+    # Para acessar as OMs de um servidor use: servidor.oms.all()
+    # Não há campo om aqui — a FK fica em OM.servidor
 
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     tipo_acesso = models.ForeignKey(TipoAcesso, on_delete=models.CASCADE)
@@ -160,7 +158,37 @@ class Servidor(models.Model):
         return self.nome
 
 class OM(models.Model):
-    servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    """
+    Organização Militar (OM) atendida por um servidor.
+
+    Relação com Servidor:
+      - Uma OM pode estar vinculada a um Servidor (FK opcional).
+      - Um Servidor pode atender várias OMs (acesso via servidor.oms.all()).
+      - O vínculo é opcional: uma OM pode ser cadastrada sem servidor
+        (ex: aguardando instalação).
+
+    Para vincular uma OM a um servidor:
+        om.servidor = meu_servidor
+        om.save()
+
+    Para listar todas as OMs de um servidor:
+        meu_servidor.oms.all()
+
+    Para listar OMs sem servidor vinculado:
+        OM.objects.filter(servidor__isnull=True)
+    """
+
+    # FK opcional para Servidor — null=True permite cadastrar OM sem servidor
+    # related_name='oms' permite acessar via servidor.oms.all()
+    servidor = models.ForeignKey(
+        Servidor,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='oms',
+        verbose_name='Servidor',
+    )
+
     sigla = models.CharField(max_length=20)
     nome = models.CharField(max_length=100)
     comar = models.ForeignKey(Comar, on_delete=models.CASCADE)
@@ -168,10 +196,14 @@ class OM(models.Model):
     tipo_elo = models.ForeignKey(TipoElo, on_delete=models.CASCADE)
     obs = models.TextField(blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'OM'
+        verbose_name_plural = 'OMs'
+
     def __str__(self):
-        return self.nome
-    
-    
+        return f"{self.sigla} — {self.nome}"
+
+
 # =========================
 # HISTÓRICO DE STATUS
 # =========================

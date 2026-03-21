@@ -102,8 +102,11 @@ class ComarForm(forms.ModelForm):
 class OMForm(forms.ModelForm):
     class Meta:
         model = OM
-        fields = ['sigla', 'nome', 'comar', 'pais', 'tipo_elo', 'obs']
+        # servidor é opcional — pode ser vinculado depois
+        fields = ['servidor', 'sigla', 'nome', 'comar', 'pais', 'tipo_elo', 'obs']
         widgets = {
+            # Servidor aparece como select; campo em branco = sem vínculo
+            'servidor': forms.Select(attrs=_SELECT_ATTRS),
             'sigla': forms.TextInput(attrs=_WIDGET_ATTRS),
             'nome': forms.TextInput(attrs=_WIDGET_ATTRS),
             'comar': forms.Select(attrs=_SELECT_ATTRS),
@@ -119,12 +122,12 @@ class OMForm(forms.ModelForm):
 class ServidorForm(forms.ModelForm):
     class Meta:
         model = Servidor
+        # om foi removido daqui — a FK agora fica em OM.servidor
         fields = [
-            'om', 'status', 'tipo_acesso', 'nome',
+            'status', 'tipo_acesso', 'nome',
             'data_aquisicao', 'sistema_operacional', 'versao_so', 'suporte_so', 'obs',
         ]
         widgets = {
-            'om': forms.Select(attrs=_SELECT_ATTRS),
             'status': forms.Select(attrs=_SELECT_ATTRS),
             'tipo_acesso': forms.Select(attrs=_SELECT_ATTRS),
             'nome': forms.TextInput(attrs=_WIDGET_ATTRS),

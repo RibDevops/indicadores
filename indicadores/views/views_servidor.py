@@ -12,12 +12,16 @@ def servidor_list(request):
 
 def servidor_detail(request, pk):
     obj = get_object_or_404(Servidor, pk=pk)
+    # OMs vinculadas a este servidor (relação inversa via OM.servidor FK)
+    # Acesso via related_name='oms' definido em OM.servidor
+    oms = obj.oms.select_related('comar', 'pais', 'tipo_elo').all()
     # Histórico de mudanças de status — usado para exibir linha do tempo
     # e para calcular dias por status via obj.dias_por_status()
     historico_status = DataStatus.objects.filter(servidor=obj).order_by('-data_status')
     visitas = DataVisita.objects.filter(servidor=obj).order_by('-data_visita')
     return render(request, 'servidor/detail.html', {
         'objeto': obj,
+        'oms': oms,
         'historico_status': historico_status,
         'dias_por_status': obj.dias_por_status(),
         'visitas': visitas,

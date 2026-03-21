@@ -129,13 +129,15 @@ def _compute_indicadores():
 
     # ── REDE_M ────────────────────────────────────────────────────────────────
 
-    # OMs que possuem ao menos um servidor cadastrado
-    om_com_rede = OM.objects.filter(servidores__isnull=False).distinct()
+    # A relação agora é invertida: OM tem FK para Servidor (OM.servidor).
+    # OMs com servidor vinculado (servidor__isnull=False)
+    om_com_rede = OM.objects.filter(servidor__isnull=False).distinct()
 
-    # QntUnidTotal: total de OMs com rede
+    # QntUnidTotal: total de OMs vinculadas a algum servidor
     qnt_unid_total = om_com_rede.count()
 
     # QntUnidTotalTiposdeAcesso: contagem de servidores por tipo de acesso
+    # (lógica inalterada — TipoAcesso ainda está em Servidor)
     tipos_acesso = (
         TipoAcesso.objects
         .filter(servidor__isnull=False)
@@ -144,23 +146,23 @@ def _compute_indicadores():
         .order_by('-total')
     )
 
-    # QntUnid-INOperantes: OMs onde todos os servidores estão inoperantes
+    # QntUnid-INOperantes: OMs cujo servidor está inoperante.
+    # Como uma OM tem exatamente um servidor (FK), basta verificar o status desse servidor.
     om_inoperantes = 0
-    for om in om_com_rede:
-        todos_inop = all(
-            any(kw in s.status.descricao.lower() for kw in _STATUS_INOPERANTE)
-            for s in om.servidores.select_related('status').all()
-        )
-        if todos_inop:
+    for om in om_com_rede.select_related('servidor__status'):
+        status_desc = om.servidor.status.descricao.lower()
+        if any(kw in status_desc for kw in _STATUS_INOPERANTE):
             om_inoperantes += 1
 
     # ── I_BR — Rede Brasil ────────────────────────────────────────────────────
 
-    # Servidores de OMs localizadas no Brasil
+    # Servidores que possuem ao menos uma OM vinculada com país = Brasil.
+    # OM.servidor é a FK, então filtramos Servidor pelos seus relacionamentos inversos (oms).
     servidores_br = (
         Servidor.objects
-        .filter(om__pais__sigla=_SIGLA_BRASIL)
-        .select_related('om__pais', 'status', 'tipo_acesso')
+        .filter(oms__pais__sigla=_SIGLA_BRASIL)
+        .distinct()
+        .select_related('status', 'tipo_acesso')
         .prefetch_related('datavisita_set')
     )
 
@@ -181,11 +183,14 @@ def _compute_indicadores():
 
     # ── I_EXT — Rede Exterior ─────────────────────────────────────────────────
 
-    # Servidores de OMs localizadas fora do Brasil
+    # Servidores com ao menos uma OM vinculada fora do Brasil.
+    # Exclui servidores que só têm OMs brasileiras.
     servidores_ext = (
         Servidor.objects
-        .exclude(om__pais__sigla=_SIGLA_BRASIL)
-        .select_related('om__pais', 'status', 'tipo_acesso')
+        .filter(oms__isnull=False)
+        .exclude(oms__pais__sigla=_SIGLA_BRASIL)
+        .distinct()
+        .select_related('status', 'tipo_acesso')
         .prefetch_related('datavisita_set')
     )
 
