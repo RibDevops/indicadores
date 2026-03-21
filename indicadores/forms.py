@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from .models import (
     Status, TipoAcesso, TipoElo, Pais, Estado, RegiaoCidade,
-    Comar, OM, Servidor, DataCompra, DataVisita,
+    Comar, OM, Servidor, DataVisita,
 )
 
 _WIDGET_ATTRS = {'class': 'form-control'}
@@ -138,21 +138,6 @@ class ServidorForm(forms.ModelForm):
     def clean_data_aquisicao(self):
         return _reject_future_date(
             self.cleaned_data.get('data_aquisicao'), 'Data de aquisição'
-        )
-
-
-class DataCompraForm(forms.ModelForm):
-    class Meta:
-        model = DataCompra
-        fields = ['servidor', 'data_compra']
-        widgets = {
-            'servidor': forms.Select(attrs=_SELECT_ATTRS),
-            'data_compra': forms.DateInput(attrs={**_WIDGET_ATTRS, 'type': 'date'}),
-        }
-
-    def clean_data_compra(self):
-        return _reject_future_date(
-            self.cleaned_data.get('data_compra'), 'Data de compra'
         )
 
 

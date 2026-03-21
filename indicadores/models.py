@@ -131,15 +131,87 @@ class Servidor(models.Model):
             self.SUPORTE_DESCONTINUADO: 0.0,
         }.get(self.suporte_so, 0.0)
 
+    def dias_por_status(self):
+        """
+        Retorna um dicionário {status_descricao: total_dias} calculado a partir
+        do histórico de DataStatus.
+
+        Lógica:
+          - Os registros são ordenados por data_status (crescente).
+          - Para cada registro N, o período contado vai de data_status[N]
+            até data_status[N+1] (ou hoje, se for o último registro).
+          - Isso permite saber quantos dias o servidor ficou em cada status.
+
+        Exemplo de uso no template:
+            {% for status, dias in objeto.dias_por_status.items %}
+                {{ status }}: {{ dias }} dias
+            {% endfor %}
+        """
+        historico = list(
+            self.datastatus_set.select_related('status')
+            .order_by('data_status')
+        )
+        totais = {}
+        hoje = timezone.now().date()
+
+        for i, registro in enumerate(historico):
+            # Data de início do período é a data do registro atual
+            inicio = registro.data_status
+            # Data de fim é o início do próximo registro, ou hoje se for o último
+            fim = historico[i + 1].data_status if i + 1 < len(historico) else hoje
+            dias = (fim - inicio).days
+            descricao = registro.status.descricao
+            totais[descricao] = totais.get(descricao, 0) + dias
+
+        return totais
+
     def __str__(self):
         return self.nome
 
+
+# =========================
+# HISTÓRICO DE STATUS
+# =========================
+
 class DataStatus(models.Model):
+    """
+    Registra cada mudança de status de um Servidor.
+
+    Um novo registro é criado automaticamente via signal (indicadores/signals.py)
+    toda vez que o campo `status` do Servidor é alterado ou criado.
+
+    Campos:
+      - servidor:    FK para o Servidor relacionado.
+      - status:      FK para o Status que foi atribuído nesta data.
+      - data_status: Data em que o status foi aplicado (preenchida automaticamente).
+
+    Como usar manualmente (se necessário):
+        DataStatus.objects.create(
+            servidor=meu_servidor,
+            status=novo_status,
+            data_status=date.today(),
+        )
+
+    Para calcular dias por status, use o método `servidor.dias_por_status()`.
+    """
     servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)
+    # Status que estava ativo nesta data
+    status = models.ForeignKey(Status, on_delete=models.CASCADE)
+    # Data em que o status foi registrado (preenchida automaticamente pelo signal)
     data_status = models.DateField()
 
+    class Meta:
+        ordering = ['data_status']
+        verbose_name = 'Histórico de Status'
+        verbose_name_plural = 'Histórico de Status'
+
     def __str__(self):
-        return f"{self.servidor} - {self.data_visita}"
+        return f"{self.servidor} — {self.status} em {self.data_status}"
+
+
+# =========================
+# HISTÓRICO DE VISITAS
+# =========================
 
 class DataVisita(models.Model):
     servidor = models.ForeignKey(Servidor, on_delete=models.CASCADE)

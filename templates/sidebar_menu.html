@@ -92,18 +92,24 @@
         <span class="text-uppercase text-secondary" style="font-size:.7rem;letter-spacing:.08em;">Histórico</span>
     </div>
 
-    <a href="{% url 'ind:data_compra_list' %}"
-       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
-              {% if 'data_compra' in request.resolver_match.url_name|default:'' %}active{% endif %}">
-        <i class="bi bi-cart-check fs-5"></i>
-        <span>Datas de Compra</span>
-    </a>
-
     <a href="{% url 'ind:data_visita_list' %}"
        class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
               {% if 'data_visita' in request.resolver_match.url_name|default:'' %}active{% endif %}">
         <i class="bi bi-calendar-check fs-5"></i>
         <span>Datas de Visita</span>
+    </a>
+
+    {# ── Administração ── #}
+    <div class="px-3 pt-3 pb-1">
+        <span class="text-uppercase text-secondary" style="font-size:.7rem;letter-spacing:.08em;">Administração</span>
+    </div>
+
+    {# Usuários locais — precisam existir aqui para que o login LDAP funcione #}
+    <a href="{% url 'ind:usuario_list' %}"
+       class="sidebar-link d-flex align-items-center gap-2 px-3 py-2 text-white text-decoration-none
+              {% if 'usuario' in request.resolver_match.url_name|default:'' %}active{% endif %}">
+        <i class="bi bi-people-fill fs-5"></i>
+        <span>Usuários</span>
     </a>
 
 </nav>

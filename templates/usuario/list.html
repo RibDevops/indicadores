@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Usuários{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary"><i class="bi bi-people-fill"></i> Usuários</h2>
+        <a href="{% url 'ind:usuario_create' %}" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-circle"></i> Novo
+        </a>
+    </div>
+
+    {# Usuários locais — precisam existir aqui para que o login LDAP funcione #}
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Nome completo</th>
+                        <th>E-mail</th>
+                        <th>Staff</th>
+                        <th>Superusuário</th>
+                        <th>Ativo</th>
+                        <th>Último login</th>
+                        <th>Cadastrado em</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in objetos %}
+                    <tr>
+                        <td class="text-muted small">{{ u.pk }}</td>
+                        <td class="fw-semibold">{{ u.username }}</td>
+                        <td class="text-muted small">{{ u.get_full_name|default:"-" }}</td>
+                        <td class="text-muted small">{{ u.email|default:"-" }}</td>
+                        <td class="text-center">
+                            {% if u.is_staff %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle text-muted"></i>{% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if u.is_superuser %}<i class="bi bi-check-circle-fill text-warning"></i>{% else %}<i class="bi bi-x-circle text-muted"></i>{% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if u.is_active %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-x-circle text-danger"></i>{% endif %}
+                        </td>
+                        <td class="text-muted small">{{ u.last_login|date:"d/m/Y H:i"|default:"-" }}</td>
+                        <td class="text-muted small">{{ u.date_joined|date:"d/m/Y" }}</td>
+                        <td class="text-center">
+                            <a href="{% url 'ind:usuario_update' u.pk %}" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'ind:usuario_delete' u.pk %}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="10" class="text-center text-muted py-4"><i class="bi bi-inbox fs-4 d-block mb-2"></i>Nenhum usuário cadastrado.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

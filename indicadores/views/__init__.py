@@ -11,3 +11,4 @@ from .views_om import *
 from .views_servidor import *
 from .views_data_compra import *
 from .views_data_visita import *
+from .views_usuario import *

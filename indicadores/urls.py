@@ -76,4 +76,10 @@ urlpatterns = [
     path('data-visita/novo/', views.data_visita_create, name='data_visita_create'),
     path('data-visita/<int:pk>/editar/', views.data_visita_update, name='data_visita_update'),
     path('data-visita/<int:pk>/excluir/', views.data_visita_delete, name='data_visita_delete'),
+
+    # Usuários locais (autenticação via LDAP — senha gerenciada pelo LDAP)
+    path('usuarios/', views.usuario_list, name='usuario_list'),
+    path('usuarios/novo/', views.usuario_create, name='usuario_create'),
+    path('usuarios/<int:pk>/editar/', views.usuario_update, name='usuario_update'),
+    path('usuarios/<int:pk>/excluir/', views.usuario_delete, name='usuario_delete'),
 ]
